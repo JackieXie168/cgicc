@@ -54,7 +54,7 @@
 #  endif
 
 #  define HOST "Win32"
-#  define VERSION "@VERSION@"
+#  define VERSION "3.2.14"
 
 #else
 #  define CGICC_API
