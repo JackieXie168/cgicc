@@ -1,20 +1,20 @@
 /*
- *  $Id: Cgicc.cpp,v 1.3 1999/08/16 18:02:39 sbooth Exp $
+ *  $Id: Cgicc.cpp,v 1.10 2001/09/03 16:19:51 sbooth Exp $
  *
- *  Copyright (C) 1996, 1997, 1998, 1999 Stephen F. Booth
+ *  Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001 Stephen F. Booth
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
+ *  This library is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
@@ -187,8 +187,8 @@ CGICCNS MultipartHeader::operator= (const MultipartHeader& head)
 // ============================================================
 // Class Cgicc
 // ============================================================
-CGICCNS Cgicc::Cgicc()
-  : fEnvironment()
+CGICCNS Cgicc::Cgicc(reader_function_t stream_reader)
+  : fEnvironment(stream_reader)
 {
 #if DEBUG
 #if HAVE_STRFTIME
@@ -209,7 +209,7 @@ CGICCNS Cgicc::Cgicc()
   // this can be tweaked for performance
   fFormData.reserve(40);
   fFormFiles.reserve(5);
-  
+
   if(stringsAreEqual(getEnvironment().getRequestMethod(), "post"))
     parseFormInput(getEnvironment().getPostData());
   else
@@ -264,19 +264,19 @@ CGICCNS Cgicc::restore(const STDNS string& filename)
 bool 
 CGICCNS Cgicc::queryCheckbox(const STDNS string& elementName) 	const
 {
-  STDNS vector<FormEntry>::const_iterator iter = getElement(elementName);
+  const_form_iterator iter = getElement(elementName);
   return ((iter != fFormData.end()) && 
 	  stringsAreEqual( (*iter).getValue(), "on"));
 }
 
-STDNS vector<CGICCNS FormEntry>::iterator 
+CGICCNS form_iterator 
 CGICCNS Cgicc::getElement(const STDNS string& name)
 {
   return STDNS find_if(fFormData.begin(), fFormData.end(), 
 		       FE_nameCompare(name));
 }
 
-STDNS vector<CGICCNS FormEntry>::const_iterator 
+CGICCNS const_form_iterator 
 CGICCNS Cgicc::getElement(const STDNS string& name) 		const
 {
   return STDNS find_if(fFormData.begin(), fFormData.end(), 
@@ -290,14 +290,14 @@ CGICCNS Cgicc::getElement(const STDNS string& name,
   return findEntries(name, true, result); 
 }
 
-STDNS vector<CGICCNS FormEntry>::iterator 
+CGICCNS form_iterator 
 CGICCNS Cgicc::getElementByValue(const STDNS string& value)
 {
   return STDNS find_if(fFormData.begin(), fFormData.end(), 
 		       FE_valueCompare(value));
 }
 
-STDNS vector<CGICCNS FormEntry>::const_iterator 
+CGICCNS const_form_iterator 
 CGICCNS Cgicc::getElementByValue(const STDNS string& value) 	const
 {
   return STDNS find_if(fFormData.begin(), fFormData.end(), 
@@ -311,14 +311,14 @@ CGICCNS Cgicc::getElementByValue(const STDNS string& value,
   return findEntries(value, false, result); 
 }
 
-STDNS vector<CGICCNS FormFile>::iterator 
+CGICCNS file_iterator 
 CGICCNS Cgicc::getFile(const STDNS string& name)
 {
   return STDNS find_if(fFormFiles.begin(), fFormFiles.end(), 
 		       FF_compare(name));
 }
 
-STDNS vector<CGICCNS FormFile>::const_iterator 
+CGICCNS const_file_iterator 
 CGICCNS Cgicc::getFile(const STDNS string& name) 		const
 {
   return STDNS find_if(fFormFiles.begin(), fFormFiles.end(), 
@@ -381,6 +381,7 @@ CGICCNS Cgicc::parseFormInput(const STDNS string& data)
     while(true) {
       pos = data.find(sep, oldPos);
 
+      // If sep wasn't found, the rest of the data is an item
       if(pos == STDNS string::npos)
 	break;
 
@@ -389,6 +390,13 @@ CGICCNS Cgicc::parseFormInput(const STDNS string& data)
 
       // update position
       oldPos = pos + sepLen;
+    }
+
+    // The data is terminated by sep2
+    pos = data.find(sep2, oldPos);
+    // parse the data, if found
+    if(pos != STDNS string::npos) {
+      parseMIME(data.substr(oldPos, pos - oldPos));
     }
   }
   else if(! data.empty()) {
@@ -465,12 +473,12 @@ CGICCNS Cgicc::parseMIME(const STDNS string& data)
   if(headLimit == STDNS string::npos)
     return;
 
-  // Parse the header
-  MultipartHeader head = parseHeader(data.substr(0, headLimit));
-
   // Extract the value - there is still a trailing CR/LF to be subtracted off
   STDNS string::size_type valueStart = headLimit + end.length();
   STDNS string value = data.substr(valueStart, data.length() - valueStart - 2);
+
+  // Parse the header - pass trailing CR/LF x 2 to parseHeader
+  MultipartHeader head = parseHeader(data.substr(0, valueStart));
 
   if(head.getFilename().empty())
     fFormData.push_back(FormEntry(head.getName(), value));

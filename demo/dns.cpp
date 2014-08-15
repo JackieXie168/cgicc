@@ -1,7 +1,7 @@
 /*
- *  $Id: dns.cpp,v 1.6 1999/08/17 17:16:11 sbooth Exp $
+ *  $Id: dns.cpp,v 1.15 2001/09/03 16:14:26 sbooth Exp $
  *
- *  Copyright (C) 1996, 1997, 1998, 1999 Stephen F. Booth
+ *  Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001 Stephen F. Booth
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,6 +18,14 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+/*! \file dns.cpp
+ * \brief A WWW to DNS gateway
+ *
+ * A sample CGI application using the GNU %cgicc library.  This script 
+ * allows users to lookup the IP address corresponding to a hostname, 
+ * or vice-versa.
+ */
+
 #include <cstdlib>
 #include <new>
 #include <vector>
@@ -25,8 +33,9 @@
 #include <iostream>
 
 #include "cgicc/CgiDefs.h"
-#include "cgicc/HTMLClasses.h"
 #include "cgicc/Cgicc.h"
+#include "cgicc/HTTPHeaders.h"
+#include "cgicc/HTMLClasses.h"
 
 #if HAVE_UNAME
 #  include <sys/utsname.h>
@@ -49,7 +58,7 @@
 // To use logging, the variable gLogFile MUST be defined, and it _must_
 // be an ofstream
 #if DEBUG
-  STDNS ofstream gLogFile( "/change_this_path/Cgicc.log", STDNS ios::app );
+  STDNS ofstream gLogFile( "/change_this_path/cgicc.log", STDNS ios::app );
 #endif
 
 #if CGICC_USE_NAMESPACES
@@ -57,13 +66,14 @@
   using namespace cgicc;
 #else
 #  define div div_
+#  define link link_
 #  define select select_
 #endif
 
 // DNS gateway cgi
 int
-main(int argc, 
-     char **argv)
+main(int /*argc*/, 
+     char ** /*argv*/)
 {
 
   try {
@@ -75,7 +85,7 @@ main(int argc,
     Cgicc cgi;
     
     cout << HTTPHTMLHeader() << HTMLDoctype(HTMLDoctype::eStrict) << endl;
-    cout << html().set("lang","EN").set("dir","LTR") << endl;
+    cout << html().set("lang","en").set("dir","ltr") << endl;
     
     // Set up the page; I will put in lfs to ease reading of the
     // produced HTML. These are optional, and except in <PRE>
@@ -84,16 +94,16 @@ main(int argc,
 
     // Output the style sheet portion of the header
     cout << style() << comment() << endl;
-    cout << "BODY { color: black; background-color: white; }" << endl;
-    cout << "HR.half { width: 60%; align: center; }" << endl;
-    cout << "SPAN.red, STRONG.red { color: red; }" << endl;
-    cout << "DIV.smaller { font-size: small; }" << endl;
-    cout << "DIV.dns { border: solid thin; margin: 1em 0; "
-	 << "background: #DDD; text-align: center; }" << endl;
-    cout << "SPAN.blue { color: blue; }" << endl;
-    cout << "COL.title { color: white; background-color: black; ";
+    cout << "body { color: black; background-color: white; }" << endl;
+    cout << "hr.half { width: 60%; align: center; }" << endl;
+    cout << "span.red, strong.red { color: red; }" << endl;
+    cout << "div.smaller { font-size: small; }" << endl;
+    cout << "div.dns { border: solid thin; margin: 1em 0; "
+	 << "background: #ddd; text-align: center; }" << endl;
+    cout << "span.blue { color: blue; }" << endl;
+    cout << "col.title { color: white; background-color: black; ";
     cout << "font-weight: bold; text-align: center; }" << endl;
-    cout << "COL.data { background-color: #DDD; text-align: left; }" << endl;
+    cout << "col.data { background-color: #ddd; text-align: left; }" << endl;
     cout << comment() << style() << endl;
 
     cout << title("DNS Gateway") << endl;
@@ -101,11 +111,11 @@ main(int argc,
 		  .set("content", "Stephen F. Booth") << endl;
     cout << head() << endl;
     
-    cout << h1() << "Cgi" << span("cc").set("class","red")
+    cout << h1() << "GNU cgi" << span("cc").set("class","red")
 	 << " DNS Gateway" << h1() << endl;
   
-    STDNS vector<FormEntry>::iterator ip = cgi.getElement("ip");
-    STDNS vector<FormEntry>::iterator name = cgi.getElement("hostname");
+    form_iterator ip = cgi.getElement("ip");
+    form_iterator name = cgi.getElement("hostname");
 
     if(ip != (*cgi).end()) {
       cout << h3() << "Query results for " << **ip << h3() << endl;
@@ -192,41 +202,44 @@ main(int argc,
 		 .set("span","1") << endl;
     cout << colgroup() << endl;
     
-    cout << "<FORM METHOD=\"POST\" ACTION=\"http://"
-	 << cgi.getEnvironment().getServerName()
-	 << cgi.getEnvironment().getScriptName() << "\">" << endl;
+    cout << "<form method=\"post\" action=\"http://"
+	 << cgi.getEnvironment().getServerName();
+    if(cgi.getEnvironment().getServerPort() != 80)
+      cout << ":" << cgi.getEnvironment().getServerPort();
+    cout << cgi.getEnvironment().getScriptName() << "\">" << endl;
     
     cout << tr() << endl;
     cout << td(strong("IP Address: ")) << endl;
-    cout << td() << "<INPUT TYPE=\"TEXT\" NAME=\"ip\"";
+    cout << td() << "<input type=\"text\" name=\"ip\"";
     if(ip != (*cgi).end())
-      cout << " VALUE=\"" << **ip << "\">";
+      cout << " value=\"" << **ip << "\">";
     else
       cout << ">";
-    cout << td() << tr() << "</FORM>" << endl;
+    cout << td() << tr() << "</form>" << endl;
     
-    cout << "<FORM METHOD=\"POST\" ACTION=\"http://"
-	 << cgi.getEnvironment().getServerName()
-	 << cgi.getEnvironment().getScriptName() << "\">" << endl;
+    cout << "<form method=\"post\" action=\"http://"
+	 << cgi.getEnvironment().getServerName();
+    if(cgi.getEnvironment().getServerPort() != 80)
+      cout << ":" << cgi.getEnvironment().getServerPort();
+    cout << cgi.getEnvironment().getScriptName() << "\">" << endl;
     
     cout << tr() << endl;
     cout << td(strong("Hostname: ")) << endl;
-    cout << td() << "<INPUT TYPE=\"TEXT\" NAME=\"hostname\"";
+    cout << td() << "<input type=\"text\" name=\"hostname\"";
     if(name != (*cgi).end())
-      cout << " VALUE=\"" << **name << "\">";
+      cout << " value=\"" << **name << "\">";
     else
       cout << ">";
     cout << td() << tr() << endl;
-    cout << "</FORM>" << table() << p() << endl;
+    cout << "</form>" << table() << p() << endl;
     
     // Now print cout a footer with some fun info
     cout << hr(set("class","half")) << endl;
     cout << CGICCNS div().set("align","center").set("class","smaller") << endl;
-    cout << "GNU Cgi" << span("cc").set("class","red") << " v"
+    cout << "GNU cgi" << span("cc").set("class","red") << " v"
 	 << cgi.getVersion();
     cout << " by " << a("Stephen F. Booth")
-			.set("href", "http://www.lmi.net/~sbooth/") 
-	 << br() << endl;
+      .set("href", "mailto:sbooth@gnu.org") << br() << endl;
     cout << "Compiled at " << cgi.getCompileTime() 
 	 << " on " << cgi.getCompileDate() << br() << endl;
     

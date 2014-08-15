@@ -1,33 +1,51 @@
-## $Id: Makefile.am,v 1.19 1999/08/10 00:12:53 sbooth Exp $
+## $Id: Makefile.am,v 1.30 2002/01/09 17:16:41 sbooth Exp $
 
-AUTOMAKE_OPTIONS = check-news dist-zip
+AUTOMAKE_OPTIONS = check-news dist-zip dist-bzip2
 
 if DEMOS
-DEMO = demo
+DEMO = demo contrib
 else
 DEMO =
 endif
 
-SUBDIRS = cgicc info $(DEMO)
+if MAINTAINER_MODE
+HTML = html
+else
+HTML =
+endif
+
+SUBDIRS = cgicc doc support $(HTML) $(DEMO)
+
+DIST_SUBDIRS = cgicc doc support $(DEMO)
 
 CLEANFILES = *~
 
-EXTRA_DIST = acconfig.h README.WIN
+MAINTAINERCLEANFILES = config.guess config.sub ltmain.sh aclocal.m4 \
+	cgicc-*.tar.gz cgicc-*.diff
+
+EXTRA_DIST = acconfig.h README.WIN COPYING.DOC
 
 dist-hook:
 	test -d $(distdir)/example || mkdir $(distdir)/example || exit 1
-	cp -p $(srcdir)/example/README $(distdir)/example
+	cp -p $(srcdir)/example/AUTHORS $(distdir)/example
+	cp -p $(srcdir)/example/COPYING $(distdir)/example
+	cp -p $(srcdir)/example/ChangeLog $(distdir)/example
+	cp -p $(srcdir)/example/INSTALL $(distdir)/example
+	cp -p $(srcdir)/example/Makefile.am $(distdir)/example
 	cp -p $(srcdir)/example/Makefile.in $(distdir)/example
-	cp -p $(srcdir)/example/yourSource.cpp $(distdir)/example
-	test -d $(distdir)/support || mkdir $(distdir)/support || exit 1
-	cp -p $(srcdir)/support/config.guess $(distdir)/support
-	cp -p $(srcdir)/support/config.sub $(distdir)/support
-	cp -p $(srcdir)/support/install-sh $(distdir)/support
-	cp -p $(srcdir)/support/ltconfig $(distdir)/support
-	cp -p $(srcdir)/support/ltmain.sh $(distdir)/support
-	cp -p $(srcdir)/support/mdate-sh $(distdir)/support
-	cp -p $(srcdir)/support/missing $(distdir)/support
-	cp -p $(srcdir)/support/mkinstalldirs $(distdir)/support
+	cp -p $(srcdir)/example/NEWS $(distdir)/example
+	cp -p $(srcdir)/example/README $(distdir)/example
+	cp -p $(srcdir)/example/acinclude.m4 $(distdir)/example
+	cp -p $(srcdir)/example/aclocal.m4 $(distdir)/example
+	cp -p $(srcdir)/example/autogen $(distdir)/example
+	cp -p $(srcdir)/example/config.guess $(distdir)/example
+	cp -p $(srcdir)/example/config.sub $(distdir)/example
+	cp -p $(srcdir)/example/configure $(distdir)/example
+	cp -p $(srcdir)/example/configure.ac $(distdir)/example
+	cp -p $(srcdir)/example/example.cpp $(distdir)/example
+	cp -p $(srcdir)/example/install-sh $(distdir)/example
+	cp -p $(srcdir)/example/missing $(distdir)/example
+	cp -p $(srcdir)/example/mkinstalldirs $(distdir)/example
 	test -d $(distdir)/win || mkdir $(distdir)/win || exit 1
 	cp -p $(srcdir)/win/cgicc.dsw $(distdir)/win
 	cp -p $(srcdir)/win/cgicc.dsp $(distdir)/win
