@@ -1,6 +1,6 @@
 /* -*-c++-*- */
 /*
- *  $Id: Cgicc.h,v 1.5 1999/09/30 17:38:19 sbooth Exp $
+ *  $Id: Cgicc.h,v 1.4 1999/08/16 18:02:40 sbooth Exp $
  *
  *  Copyright (C) 1996, 1997, 1998, 1999 Stephen F. Booth
  *
@@ -58,15 +58,6 @@ CGICC_BEGIN_NAMESPACE
 #endif
   
 class MultipartHeader;
-
-// ============================================================
-// Iterator typedefs
-// ============================================================
-typedef STDNS vector<FormEntry>::iterator 	form_iterator;
-typedef STDNS vector<FormEntry>::const_iterator const_form_iterator;
-
-typedef STDNS vector<FormFile>::iterator 	file_iterator;
-typedef STDNS vector<FormFile>::const_iterator 	const_file_iterator;
 
 // ============================================================
 // Class Cgicc
@@ -145,7 +136,7 @@ public:
    * @param name The name of the radio button or list item to find.
    * @return An iterator referring to the desired element, if found.
    */
-  inline form_iterator 
+  inline STDNS vector<FormEntry>::iterator 
   operator[] (const STDNS string& name)
     { return getElement(name); }
 
@@ -154,7 +145,7 @@ public:
    * @param name The name of the radio button or list item to find.
    * @return An iterator referring to the desired element, if found.
    */
-  inline const_form_iterator 
+  inline STDNS vector<FormEntry>::const_iterator 
   operator[] (const STDNS string& name) 		const
     { return getElement(name); }
   
@@ -163,7 +154,7 @@ public:
    * @param name The name of the radio button or list item to find.
    * @return An iterator referring to the desired element, if found.
    */
-  form_iterator 
+  STDNS vector<FormEntry>::iterator 
   getElement(const STDNS string& name);
   
   /**
@@ -171,7 +162,7 @@ public:
    * @param name The name of the radio button or list item to find.
    * @return A const_iterator referring to the desired element, if found.
    */
-  const_form_iterator 
+  STDNS vector<FormEntry>::const_iterator 
   getElement(const STDNS string& name) 			const;
   
   /**
@@ -189,7 +180,7 @@ public:
    * @param value The value of the radio button or list item to find.
    * @return An iterator referring to the desired element, if found.
    */
-  form_iterator 
+  STDNS vector<FormEntry>::iterator 
   getElementByValue(const STDNS string& value);
   
   /**
@@ -197,7 +188,7 @@ public:
    * @param value The value of the radio button or list item to find.
    * @return A const_iterator referring to the desired element, if found.
    */
-  const_form_iterator 
+  STDNS vector<FormEntry>::const_iterator 
   getElementByValue(const STDNS string& value) 		const;
   
   /**
@@ -232,7 +223,7 @@ public:
    * @param name The name of the file.
    * @return An iterator referring to the desired file, if found.
    */
-  file_iterator 
+  STDNS vector<FormFile>::iterator 
   getFile(const STDNS string& name);
   
   /**
@@ -240,7 +231,7 @@ public:
    * @param name The name of the file.
    * @return An iterator referring to the desired file, if found.
    */
-  const_file_iterator 
+  STDNS vector<FormFile>::const_iterator 
   getFile(const STDNS string& name) 			const;
 
   /** 

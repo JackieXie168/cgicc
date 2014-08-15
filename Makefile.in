@@ -64,21 +64,23 @@ CC = @CC@
 CGICC_USE_NAMESPACES = @CGICC_USE_NAMESPACES@
 CXX = @CXX@
 DLLTOOL = @DLLTOOL@
+LD = @LD@
 LIBTOOL = @LIBTOOL@
 LIB_NET = @LIB_NET@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+NM = @NM@
 OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
 
-AUTOMAKE_OPTIONS = check-news dist-zip #dist-bzip2
+AUTOMAKE_OPTIONS = check-news dist-zip
 @DEMOS_TRUE@DEMO = demo
 @DEMOS_FALSE@DEMO = 
 
-SUBDIRS = cgicc info support $(DEMO)
+SUBDIRS = cgicc info $(DEMO)
 
 CLEANFILES = *~
 
@@ -98,9 +100,9 @@ cgicc/config.h.in cgicc/stamp-h.in configure configure.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
-DIST_SUBDIRS =  cgicc info support demo
+DIST_SUBDIRS =  cgicc info demo
 all: all-redirect
 .SUFFIXES:
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
@@ -285,7 +287,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$d/$$file $(distdir)/$$file; \
+	    cp -pr $$/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
@@ -378,27 +380,18 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 dist-hook:
 	test -d $(distdir)/example || mkdir $(distdir)/example || exit 1
-	cp -p $(srcdir)/example/AUTHORS $(distdir)/example
-	cp -p $(srcdir)/example/COPYING $(distdir)/example
-	cp -p $(srcdir)/example/ChangeLog $(distdir)/example
-	cp -p $(srcdir)/example/INSTALL $(distdir)/example
-	cp -p $(srcdir)/example/Makefile.am $(distdir)/example
-	cp -p $(srcdir)/example/Makefile.in $(distdir)/example
-	cp -p $(srcdir)/example/NEWS $(distdir)/example
 	cp -p $(srcdir)/example/README $(distdir)/example
-	cp -p $(srcdir)/example/acinclude.m4 $(distdir)/example
-	cp -p $(srcdir)/example/aclocal.m4 $(distdir)/example
-	cp -p $(srcdir)/example/autogen $(distdir)/example
-	cp -p $(srcdir)/example/config.guess $(distdir)/example
-	cp -p $(srcdir)/example/config.sub $(distdir)/example
-	cp -p $(srcdir)/example/configure $(distdir)/example
-	cp -p $(srcdir)/example/configure.in $(distdir)/example
-	cp -p $(srcdir)/example/example.cpp $(distdir)/example
-	cp -p $(srcdir)/example/install-sh $(distdir)/example
-	cp -p $(srcdir)/example/ltconfig $(distdir)/example
-	cp -p $(srcdir)/example/ltmain.sh $(distdir)/example
-	cp -p $(srcdir)/example/missing $(distdir)/example
-	cp -p $(srcdir)/example/mkinstalldirs $(distdir)/example
+	cp -p $(srcdir)/example/Makefile.in $(distdir)/example
+	cp -p $(srcdir)/example/yourSource.cpp $(distdir)/example
+	test -d $(distdir)/support || mkdir $(distdir)/support || exit 1
+	cp -p $(srcdir)/support/config.guess $(distdir)/support
+	cp -p $(srcdir)/support/config.sub $(distdir)/support
+	cp -p $(srcdir)/support/install-sh $(distdir)/support
+	cp -p $(srcdir)/support/ltconfig $(distdir)/support
+	cp -p $(srcdir)/support/ltmain.sh $(distdir)/support
+	cp -p $(srcdir)/support/mdate-sh $(distdir)/support
+	cp -p $(srcdir)/support/missing $(distdir)/support
+	cp -p $(srcdir)/support/mkinstalldirs $(distdir)/support
 	test -d $(distdir)/win || mkdir $(distdir)/win || exit 1
 	cp -p $(srcdir)/win/cgicc.dsw $(distdir)/win
 	cp -p $(srcdir)/win/cgicc.dsp $(distdir)/win

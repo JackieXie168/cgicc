@@ -1,5 +1,5 @@
 /*
- *  $Id: Cgicc.cpp,v 1.5 1999/10/02 19:10:10 sbooth Exp $
+ *  $Id: Cgicc.cpp,v 1.3 1999/08/16 18:02:39 sbooth Exp $
  *
  *  Copyright (C) 1996, 1997, 1998, 1999 Stephen F. Booth
  *
@@ -264,19 +264,19 @@ CGICCNS Cgicc::restore(const STDNS string& filename)
 bool 
 CGICCNS Cgicc::queryCheckbox(const STDNS string& elementName) 	const
 {
-  const_form_iterator iter = getElement(elementName);
+  STDNS vector<FormEntry>::const_iterator iter = getElement(elementName);
   return ((iter != fFormData.end()) && 
 	  stringsAreEqual( (*iter).getValue(), "on"));
 }
 
-CGICCNS form_iterator 
+STDNS vector<CGICCNS FormEntry>::iterator 
 CGICCNS Cgicc::getElement(const STDNS string& name)
 {
   return STDNS find_if(fFormData.begin(), fFormData.end(), 
 		       FE_nameCompare(name));
 }
 
-CGICCNS const_form_iterator 
+STDNS vector<CGICCNS FormEntry>::const_iterator 
 CGICCNS Cgicc::getElement(const STDNS string& name) 		const
 {
   return STDNS find_if(fFormData.begin(), fFormData.end(), 
@@ -290,14 +290,14 @@ CGICCNS Cgicc::getElement(const STDNS string& name,
   return findEntries(name, true, result); 
 }
 
-CGICCNS form_iterator 
+STDNS vector<CGICCNS FormEntry>::iterator 
 CGICCNS Cgicc::getElementByValue(const STDNS string& value)
 {
   return STDNS find_if(fFormData.begin(), fFormData.end(), 
 		       FE_valueCompare(value));
 }
 
-CGICCNS const_form_iterator 
+STDNS vector<CGICCNS FormEntry>::const_iterator 
 CGICCNS Cgicc::getElementByValue(const STDNS string& value) 	const
 {
   return STDNS find_if(fFormData.begin(), fFormData.end(), 
@@ -311,14 +311,14 @@ CGICCNS Cgicc::getElementByValue(const STDNS string& value,
   return findEntries(value, false, result); 
 }
 
-CGICCNS file_iterator 
+STDNS vector<CGICCNS FormFile>::iterator 
 CGICCNS Cgicc::getFile(const STDNS string& name)
 {
   return STDNS find_if(fFormFiles.begin(), fFormFiles.end(), 
 		       FF_compare(name));
 }
 
-CGICCNS const_file_iterator 
+STDNS vector<CGICCNS FormFile>::const_iterator 
 CGICCNS Cgicc::getFile(const STDNS string& name) 		const
 {
   return STDNS find_if(fFormFiles.begin(), fFormFiles.end(), 
@@ -381,7 +381,6 @@ CGICCNS Cgicc::parseFormInput(const STDNS string& data)
     while(true) {
       pos = data.find(sep, oldPos);
 
-      // If sep wasn't found, the rest of the data is an item
       if(pos == STDNS string::npos)
 	break;
 
@@ -390,13 +389,6 @@ CGICCNS Cgicc::parseFormInput(const STDNS string& data)
 
       // update position
       oldPos = pos + sepLen;
-    }
-
-    // The data is terminated by sep2
-    pos = data.find(sep2, oldPos);
-    // parse the data, if found
-    if(pos != STDNS string::npos) {
-      parseMIME(data.substr(oldPos, pos - oldPos));
     }
   }
   else if(! data.empty()) {

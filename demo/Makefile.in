@@ -64,11 +64,13 @@ CC = @CC@
 CGICC_USE_NAMESPACES = @CGICC_USE_NAMESPACES@
 CXX = @CXX@
 DLLTOOL = @DLLTOOL@
+LD = @LD@
 LIBTOOL = @LIBTOOL@
 LIB_NET = @LIB_NET@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+NM = @NM@
 OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
@@ -76,9 +78,9 @@ VERSION = @VERSION@
 
 CLEANFILES = *~
 
-EXTRA_DIST = test.html upload.html
+EXTRA_DIST = testform.html
 
-noinst_PROGRAMS = test.cgi dns.cgi upload.cgi
+noinst_PROGRAMS = test.cgi dns.cgi 
 
 INCLUDES = -I$(top_srcdir) -I$(top_builddir)
 
@@ -87,9 +89,6 @@ test_cgi_LDADD = ../cgicc/libcgicc.la
 
 dns_cgi_SOURCES = dns.cpp
 dns_cgi_LDADD = ../cgicc/libcgicc.la @LIB_NET@
-
-upload_cgi_SOURCES = upload.cpp
-upload_cgi_LDADD = ../cgicc/libcgicc.la
 mkinstalldirs = $(SHELL) $(top_srcdir)/support/mkinstalldirs
 CONFIG_HEADER = ../cgicc/config.h
 CONFIG_CLEAN_FILES = 
@@ -106,9 +105,6 @@ test_cgi_LDFLAGS =
 dns_cgi_OBJECTS =  dns.o
 dns_cgi_DEPENDENCIES =  ../cgicc/libcgicc.la
 dns_cgi_LDFLAGS = 
-upload_cgi_OBJECTS =  upload.o
-upload_cgi_DEPENDENCIES =  ../cgicc/libcgicc.la
-upload_cgi_LDFLAGS = 
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -119,10 +115,10 @@ DIST_COMMON =  README Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
-SOURCES = $(test_cgi_SOURCES) $(dns_cgi_SOURCES) $(upload_cgi_SOURCES)
-OBJECTS = $(test_cgi_OBJECTS) $(dns_cgi_OBJECTS) $(upload_cgi_OBJECTS)
+SOURCES = $(test_cgi_SOURCES) $(dns_cgi_SOURCES)
+OBJECTS = $(test_cgi_OBJECTS) $(dns_cgi_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -189,10 +185,6 @@ test.cgi: $(test_cgi_OBJECTS) $(test_cgi_DEPENDENCIES)
 dns.cgi: $(dns_cgi_OBJECTS) $(dns_cgi_DEPENDENCIES)
 	@rm -f dns.cgi
 	$(CXXLINK) $(dns_cgi_LDFLAGS) $(dns_cgi_OBJECTS) $(dns_cgi_LDADD) $(LIBS)
-
-upload.cgi: $(upload_cgi_OBJECTS) $(upload_cgi_DEPENDENCIES)
-	@rm -f upload.cgi
-	$(CXXLINK) $(upload_cgi_LDFLAGS) $(upload_cgi_OBJECTS) $(upload_cgi_LDADD) $(LIBS)
 .cpp.o:
 	$(CXXCOMPILE) -c $<
 .cpp.lo:
@@ -235,13 +227,25 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$d/$$file $(distdir)/$$file; \
+	    cp -pr $$/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+dns.o: dns.cpp ../cgicc/CgiDefs.h ../cgicc/config.h \
+	../cgicc/HTMLClasses.h ../cgicc/HTMLGeneric.h \
+	../cgicc/HTMLElements.h ../cgicc/MStreamable.h \
+	../cgicc/HTMLAttributes.h ../cgicc/Cgicc.h ../cgicc/FormEntry.h \
+	../cgicc/CgiUtils.h ../cgicc/FormFile.h \
+	../cgicc/CgiEnvironment.h ../cgicc/HTTPHeaders.h
+test.o: test.cpp ../cgicc/CgiDefs.h ../cgicc/config.h ../cgicc/Cgicc.h \
+	../cgicc/FormEntry.h ../cgicc/CgiUtils.h ../cgicc/FormFile.h \
+	../cgicc/CgiEnvironment.h ../cgicc/HTTPHeaders.h \
+	../cgicc/MStreamable.h ../cgicc/HTMLClasses.h \
+	../cgicc/HTMLGeneric.h ../cgicc/HTMLElements.h \
+	../cgicc/HTMLAttributes.h
 
 info-am:
 info: info-am

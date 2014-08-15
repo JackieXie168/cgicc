@@ -1,7 +1,7 @@
 /*
- *  $Id: dns.cpp,v 1.13 2000/10/15 15:59:20 sbooth Exp $
+ *  $Id: dns.cpp,v 1.6 1999/08/17 17:16:11 sbooth Exp $
  *
- *  Copyright (C) 1996, 1997, 1998, 1999, 2000 Stephen F. Booth
+ *  Copyright (C) 1996, 1997, 1998, 1999 Stephen F. Booth
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@
 // To use logging, the variable gLogFile MUST be defined, and it _must_
 // be an ofstream
 #if DEBUG
-  STDNS ofstream gLogFile( "/change_this_path/cgicc.log", STDNS ios::app );
+  STDNS ofstream gLogFile( "/change_this_path/Cgicc.log", STDNS ios::app );
 #endif
 
 #if CGICC_USE_NAMESPACES
@@ -57,14 +57,13 @@
   using namespace cgicc;
 #else
 #  define div div_
-#  define link link_
 #  define select select_
 #endif
 
 // DNS gateway cgi
 int
-main(int /*argc*/, 
-     char ** /*argv*/)
+main(int argc, 
+     char **argv)
 {
 
   try {
@@ -102,11 +101,11 @@ main(int /*argc*/,
 		  .set("content", "Stephen F. Booth") << endl;
     cout << head() << endl;
     
-    cout << h1() << "GNU cgi" << span("cc").set("class","red")
+    cout << h1() << "Cgi" << span("cc").set("class","red")
 	 << " DNS Gateway" << h1() << endl;
   
-    form_iterator ip = cgi.getElement("ip");
-    form_iterator name = cgi.getElement("hostname");
+    STDNS vector<FormEntry>::iterator ip = cgi.getElement("ip");
+    STDNS vector<FormEntry>::iterator name = cgi.getElement("hostname");
 
     if(ip != (*cgi).end()) {
       cout << h3() << "Query results for " << **ip << h3() << endl;
@@ -194,10 +193,8 @@ main(int /*argc*/,
     cout << colgroup() << endl;
     
     cout << "<FORM METHOD=\"POST\" ACTION=\"http://"
-	 << cgi.getEnvironment().getServerName();
-    if(cgi.getEnvironment().getServerPort() != 80)
-      cout << ":" << cgi.getEnvironment().getServerPort();
-    cout << cgi.getEnvironment().getScriptName() << "\">" << endl;
+	 << cgi.getEnvironment().getServerName()
+	 << cgi.getEnvironment().getScriptName() << "\">" << endl;
     
     cout << tr() << endl;
     cout << td(strong("IP Address: ")) << endl;
@@ -209,10 +206,8 @@ main(int /*argc*/,
     cout << td() << tr() << "</FORM>" << endl;
     
     cout << "<FORM METHOD=\"POST\" ACTION=\"http://"
-	 << cgi.getEnvironment().getServerName();
-    if(cgi.getEnvironment().getServerPort() != 80)
-      cout << ":" << cgi.getEnvironment().getServerPort();
-    cout << cgi.getEnvironment().getScriptName() << "\">" << endl;
+	 << cgi.getEnvironment().getServerName()
+	 << cgi.getEnvironment().getScriptName() << "\">" << endl;
     
     cout << tr() << endl;
     cout << td(strong("Hostname: ")) << endl;
@@ -227,10 +222,10 @@ main(int /*argc*/,
     // Now print cout a footer with some fun info
     cout << hr(set("class","half")) << endl;
     cout << CGICCNS div().set("align","center").set("class","smaller") << endl;
-    cout << "GNU cgi" << span("cc").set("class","red") << " v"
+    cout << "GNU Cgi" << span("cc").set("class","red") << " v"
 	 << cgi.getVersion();
     cout << " by " << a("Stephen F. Booth")
-			.set("href", "http://home.earthlink.net/~sfbooth/") 
+			.set("href", "http://www.lmi.net/~sbooth/") 
 	 << br() << endl;
     cout << "Compiled at " << cgi.getCompileTime() 
 	 << " on " << cgi.getCompileDate() << br() << endl;

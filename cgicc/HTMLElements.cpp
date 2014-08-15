@@ -1,7 +1,7 @@
 /*
- *  $Id: HTMLElements.cpp,v 1.5 2000/09/21 15:21:28 sbooth Exp $
+ *  $Id: HTMLElements.cpp,v 1.3 1999/08/17 17:29:31 sbooth Exp $
  *
- *  Copyright (C) 1996, 1997, 1998, 1999, 2000 Stephen F. Booth
+ *  Copyright (C) 1996, 1997, 1998, 1999 Stephen F. Booth
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,7 +30,6 @@
 // Class HTMLElement
 // ============================================================
 CGICCNS HTMLElement::HTMLElement(const HTMLElement& element)
-  : MStreamable()
 {
   this->operator= (element);
 }
@@ -227,7 +226,7 @@ CGICCNS HTMLElementList::operator= (const HTMLElementList& list)
   fElements = list.fElements;
   
   STDNS vector<HTMLElement*>::iterator iter;
-  for(iter = fElements.begin(); iter != fElements.end(); ++iter)
+  for(iter = fElements.begin(); iter != fElements.end(); iter++)
     *iter = (*iter)->clone();
 
   return *this;

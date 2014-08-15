@@ -1,38 +1,49 @@
-This is cgicc.info, produced by Makeinfo version 3.12h from
-cgicc.texinfo.
+This is Info file cgicc.info, produced by Makeinfo version 1.68 from
+the input file cgicc.texinfo.
 
 INFO-DIR-SECTION Libraries
 START-INFO-DIR-ENTRY
-* cgicc: (cgicc).                 A C++ library for writing CGI
+* Cgicc: (cgicc).                 A C++ library for writing CGI
                                   applications.
 END-INFO-DIR-ENTRY
 
-   Copyright (C) 1996, 1997, 1998, 1999, 2000 Stephen F. Booth
+   GNU Cgicc is a C++ library for developing CGI applications.
 
-   Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License, Version 1.1 or
-any later version published by the Free Software Foundation; with no
-Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
-Texts.  A copy of the license is included in the section entitled "GNU
-Free Documentation License".
+   Copyright (C) 1996, 1997, 1998, 1999 Stephen F. Booth
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the sections entitled "Copying" and "GNU General Public License"
+are included exactly as in the original, and provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Free Software Foundation.
 
 
 File: cgicc.info,  Node: Top,  Next: Overview of CGI,  Prev: (dir),  Up: (dir)
 
-GNU cgicc
+GNU Cgicc
 *********
 
-   This document describes the GNU cgicc library, a C++ class library
+   This document describes the GNU Cgicc library, a C++ class library
 that facilitates the development of Common Gateway Inteface (CGI)
 applications for the World Wide Web (WWW).
 
-   This is edition 3.1.5 of the cgicc documentation, 6 November 2000.
+   This is edition 3.1 of the Cgicc documentation, 7 June 1999.
 
 * Menu:
 
 * Overview of CGI::             An overview of the Common Gateway Interface
-* A tutorial example::          An introductory example to using cgicc
-* Library overview::            An overview of cgicc's layout
+* A tutorial example::          An introductory example to using Cgicc
+* Library overview::            An overview of Cgicc's layout
 * CGI classes::                 Classes used to query and manipulate CGI data
 * HTTP header classes::         Classes used for returning response information
 * HTML generation classes::     Classes used to return a response to the client
@@ -42,10 +53,8 @@ applications for the World Wide Web (WWW).
 * class FormFile::              Represents a file uploaded via HTTP
 * classes for HTTP headers::    Used for generating response information
 * classes for HTML output::     Used for generating a client response
-* Reporting Bugs::              How to report a bug in cgicc
-* Support::                     Where to get support for cgicc
-* Copying::                     Your rights to distribute cgicc
-* Documentation::               Your rights to distribute this manual
+* Reporting Bugs::              How to report a bug in Cgicc
+* Copying::                     Your rights to distribute Cgicc
 * Concept Index::               Index of concepts introduced in the manual
 * Function Index::              Index of member functions
 * Data Type Index::             Index of classes
@@ -107,7 +116,7 @@ and a CGI script communicate in four major ways:
    ---------- Footnotes ----------
 
    (1) The official specification for the Common Gateway Interface may
-be found at <http://hoohoo.ncsa.uiuc.edu/cgi/interface.html>.
+be found at `http://hoohoo.ncsa.uiuc.edu/cgi/interface.html'.
 
 
 File: cgicc.info,  Node: A tutorial example,  Next: Library overview,  Prev: Overview of CGI,  Up: Top
@@ -118,13 +127,13 @@ A tutorial example
 Introduction
 ============
 
-   It is easiest to understand how cgicc might be used by first looking
+   It is easiest to understand how Cgicc might be used by first looking
 at an example.  Suppose you have an HTML form on your web site asking a
 user to enter their name, age, and sex, perhaps as part of a
-user-registration procedure.  You wish to write a CGI script using cgicc
+user-registration procedure.  You wish to write a CGI script using Cgicc
 to process the form in some meaningful way.
 
-   Applications written using cgicc, like all other applications, begin
+   Applications written using Cgicc, like all other applications, begin
 with a `main' function:
 
      int main(int argc, char **argv)
@@ -135,7 +144,7 @@ with a `main' function:
 Initialization
 ==============
 
-   The three main classes of cgicc you will use to process the submitted
+   The three main classes of Cgicc you will use to process the submitted
 data are `Cgicc', `CgiEnvironment', and `FormEntry'.  These classes
 will be explained in detail later; for now, it is sufficient to know
 that:
@@ -149,7 +158,7 @@ that:
    * The class `FormEntry' is used to extract various types of data from
      the submitted form elements.
 
-   All of cgicc's functionality is accessed through class `Cgicc'.
+   All of Cgicc's functionality is accessed through class `Cgicc'.
 Thus, the first step in CGI processing is to instantiate an object of
 type `Cgicc':
 
@@ -178,9 +187,9 @@ strings, integers, and doubles.  In the hypothetical form mentioned
 above, a user would enter their name, age, and sex.  Regardless of the
 type of value, the data is accessed via `FormEntry'(1).  You obtain
 `FormEntry' objects via `Cgicc''s `getElement' methods, all of which
-return typedefs of standard-library iterators:
+return standard-library iterators:
 
-     form_iterator name = cgi.getElement("name");
+     vector<FormEntry>::iterator name = cgi.getElement("name");
 
 If the item is not found, the iterator will refer to an invalid element,
 and should not be dereferenced using `operator*' or `operator->'.
@@ -222,7 +231,7 @@ the CGI script to supply the type of content it is returning to the HTTP
 server and the client.  This is done by emitting a `Content-Type'
 header(2).
 
-   cgicc provides several classes for outputting HTTP headers, all of
+   Cgicc provides several classes for outputting HTTP headers, all of
 which begin with `HTTP'.  A standard HTML document need only output a
 single header:
 
@@ -231,11 +240,11 @@ single header:
 Simple HTML Output
 ==================
 
-   cgicc provides one class for every HTML tag defined in the HTML 4.0
+   Cgicc provides one class for every HTML tag defined in the HTML 4.0
 standard in the header file `"cgicc/HTMLClasses.h"'.  These classes
 have the same name as the HTML tags.  For example, in HTML, to indicate
 the start of a document you write <HTML>; this can be accomplished
-using cgicc by writing
+using Cgicc by writing
 
      cout << html() << endl;
 
@@ -246,7 +255,7 @@ as output `<HTML>'; conversely, the code
 
 will produce as output `<HTML>html text!</HTML>'.
 
-   All of cgicc's HTML output classes are subclasses of the abstract
+   All of Cgicc's HTML output classes are subclasses of the abstract
 class `HTMLElement'.  You can embed the text for the element directly in
 the constructor:
 
@@ -292,8 +301,8 @@ This produces as output `<TR><TD>0</TD><TD>1</TD><TD>2</TD></TR>'.
 Notes on Output
 ===============
 
-   All of cgicc's output is written to the C++ standard output stream,
-`cout'.  It is not necessary to use cgicc's HTML output classes; they
+   All of Cgicc's output is written to the C++ standard output stream,
+`cout'.  It is not necessary to use Cgicc's HTML output classes; they
 are provided as a convenience. If you prefer, you may output the HTML
 code directly to `cout'.
 
@@ -327,7 +336,7 @@ sample code given in this chapter.
            cout << body() << endl;
      
            // Print out the submitted element
-           form_iterator name = cgi.getElement("name");
+           vector<FormEntry>::iterator name = cgi.getElement("name");
            if(name != cgi.getElements().end()) {
               cout << "Your name: " << **name << endl;
            }
@@ -346,10 +355,10 @@ sample code given in this chapter.
 accessed via the class `FormFile'.
 
    (2) The full HTTP 1.1 specification may be found in RFC 2068 at
-<http://www.w3.org/Protocols/rfc2068/rfc2068>
+`http://www.w3.org/Protocols/rfc2068/rfc2068'
 
    (3) For a definitive list, see the HTML 4.0 specification at
-<http://www.w3.org/TR/REC-html40/>
+`http://www.w3.org/TR/REC-html40/'
 
 
 File: cgicc.info,  Node: Library overview,  Next: CGI classes,  Prev: A tutorial example,  Up: Top
@@ -357,7 +366,7 @@ File: cgicc.info,  Node: Library overview,  Next: CGI classes,  Prev: A tutorial
 Library overview
 ****************
 
-   The GNU cgicc library contains classes divided into two broad groups:
+   The GNU Cgicc library contains classes divided into two broad groups:
 
    * "CGI classes" used to query and manipulate CGI data, including
      information on the HTTP server, the current request, and the
@@ -393,12 +402,10 @@ Library overview
 
                *Note HTML generation classes::, for details.
 
-
-
    ---------- Footnotes ----------
 
    (1) For a complete description see the HTML 4.0 specification at
-<http://www.w3.org/TR/REC-html40/>
+`http://www.w3.org/TR/REC-html40/'
 
 
 File: cgicc.info,  Node: CGI classes,  Next: HTTP header classes,  Prev: Library overview,  Up: Top
@@ -410,7 +417,7 @@ CGI classes
 HTTP server.
 
  - Class: Cgicc
-     `Cgicc' is the main class of the cgicc library.  It is used to
+     `Cgicc' is the main class of the Cgicc library.  It is used to
      retrieve information on specific HTML form elements (such as
      checkboxes, radio buttons, and text fields), on uploaded files,
      and to save, restore, and retrieve information on the CGI
@@ -513,7 +520,7 @@ File: cgicc.info,  Node: HTML generation classes,  Next: class Cgicc,  Prev: HTT
 HTML generation classes
 ***********************
 
-   The cgicc library provides one class for each HTML element defined in
+   The Cgicc library provides one class for each HTML element defined in
 the HTML 4.0 specification.  In all cases, the name of the class
 corresponds to the name of the HTML element.
 
@@ -793,7 +800,7 @@ File: cgicc.info,  Node: class Cgicc,  Next: class CgiEnvironment,  Prev: HTML g
 class Cgicc
 ***********
 
-   `Cgicc' is the main class of the cgicc library.  It is used to
+   `Cgicc' is the main class of the Cgicc library.  It is used to
 retrieve information on specific HTML form elements (such as checkboxes,
 radio buttons, and text fields), on uploaded files, and to save,
 restore, and retrieve information on the CGI environment.
@@ -817,58 +824,44 @@ Library Information
      returned is of the format `hh:mm:ss' in 24-hour time.
 
  - Method on Cgicc: const char* getVersion () const
-     Get the version number of the cgicc library.  The string returned
-     is of the format `#.#'.
+     Get the version number of Cgicc.  The string returned is of the
+     format `#.#'.
 
  - Method on Cgicc: const char* getHost () const
-     Get the host for which the cgicc library was configured.  The
-     string returned is a canonical host triplet of the form
+     Get the host for which Cgicc was configured.  The string returned
+     is a canonical host triplet of the form
      `processor-manufacturer-os'.
 
 Form Element Access
 ===================
 
- - Data Type: form_iterator vector<FormEntry>::iterator
-     A standard template library iterator referring to a FormEntry
-     object.
-
- - Data Type: const_form_iterator vector<FormEntry>::const_iterator
-     A standard template library iterator referring to a constant
-     FormEntry object.
-
- - Data Type: file_iterator vector<FormFile>::iterator
-     A standard template library iterator referring to a FormFile
-     object.
-
- - Data Type: const_file_iterator vector<FormFile>::const_iterator
-     A standard template library iterator referring to a constant
-     FormFile object.
-
  - Method on Cgicc: bool queryCheckbox (const string& ELEMENTNAME) const
      Returns `true' if a checkbox with name ELEMENTNAME is checked,
      `false' otherwise.
 
- - Method on Cgicc: form_iterator operator[] (const string& NAME)
+ - Method on Cgicc: vector<FormEntry>::iterator operator[] (const
+          string& NAME)
      Find a radio button in a radio group, or a selected list item with
      element name NAME. If an element with name NAME is not found, the
      returned iterator will be set to the value returned by
      `getElements().end()'.
 
- - Method on Cgicc: const_form_iterator operator[] (const string& NAME)
-          const
+ - Method on Cgicc: vector<FormEntry>::const_iterator operator[] (const
+          string& NAME) const
      Find a radio button in a radio group, or a selected list item with
      element name NAME. If an element with name NAME is not found, the
      returned iterator will be set to the value returned by
      `getElements().end()'.
 
- - Method on Cgicc: form_iterator getElement (const string& NAME)
+ - Method on Cgicc: vector<FormEntry>::iterator getElement (const
+          string& NAME)
      Find a radio button in a radio group, or a selected list item with
      element name NAME. If an element with name NAME is not found, the
      returned iterator will be set to the value returned by
      `getElements().end()'.
 
- - Method on Cgicc: const_form_iterator getElement (const string& NAME)
-          const
+ - Method on Cgicc: vector<FormEntry>::const_iterator getElement (const
+          string& NAME) const
      Find a radio button in a radio group, or a selected list item with
      element name NAME. If an element with name NAME is not found, the
      returned iterator will be set to the value returned by
@@ -880,15 +873,15 @@ Form Element Access
      with element name NAME.  Returns `true' if any items with name
      NAME were found, `false' otherwise.
 
- - Method on Cgicc: form_iterator getElementByValue (const string&
-          VALUE)
+ - Method on Cgicc: vector<FormEntry>::iterator getElementByValue
+          (const string& VALUE)
      Find a radio button in a radio group, or a selected list item with
      element value VALUE. If an element with value VALUE is not found,
      the returned iterator will be set to the value returned by
      `getElements().end()'.
 
- - Method on Cgicc: const_form_iterator getElementByValue (const
-          string& NAME) const
+ - Method on Cgicc: vector<FormEntry>::const_iterator getElementByValue
+          (const string& NAME) const
      Find a radio button in a radio group, or a selected list item with
      element value VALUE. If an element with value VALUE is not found,
      the returned iterator will be set to the value returned by
@@ -909,13 +902,14 @@ Form Element Access
 Uploaded File Access
 ====================
 
- - Method on Cgicc: file_iterator getFile (const string& NAME)
+ - Method on Cgicc: vector<FormFile>::iterator getFile (const string&
+          NAME)
      Find an uploaded file with element name NAME.  If a file belonging
      to element name NAME is not found, the returned iterator will be
      set to the value returned by `getFiles().end()'.
 
- - Method on Cgicc: const_file_iterator getFile (const string& NAME)
-          const
+ - Method on Cgicc: vector<FormFile>::const_iterator getFile (const
+          string& NAME) const
      Find an uploaded file with element name NAME.  If a file belonging
      to element name NAME is not found, the returned iterator will be
      set to the value returned by `getFiles().end()'.
@@ -966,7 +960,7 @@ Server Information
 
  - Method on CgiEnvironment: string getServerName () const
      Get the hostname, DNS name, or IP address of the HTTP server.
-     This is _not_ a URL; for example, `www.gnu.org'.
+     This is *not* a URL; for example, `www.gnu.org'.
 
  - Method on CgiEnvironment: string getGatewayInterface () const
      Get the name and version of the gateway interface.  This is usually
@@ -979,10 +973,6 @@ Server Information
  - Method on CgiEnvironment: unsigned long getServerPort () const
      Get the port number on the server to which this request was sent.
      This will usually be 80.
-
- - Method on CgiEnvironment: bool usingHTTPS () const
-     Returns `true' if this is a secure request using the HTTPS
-     protocol, `false' otherwise.
 
 CGI Query Information
 =====================
@@ -1064,7 +1054,7 @@ Remote User Information
  - Method on CgiEnvironment: string getRemoteIdent () const
      Get the remote user name retrieved from the server.  This is only
      applicable if the server supports RFC 931 (obsoleted by RFC 1431)
-     identification (1).  This should _only_ be used for logging
+     identification (1).  This should *only* be used for logging
      purposes.
 
  - Method on CgiEnvironment: string getAccept () const
@@ -1079,7 +1069,7 @@ ErrorDocument Handling
 ======================
 
    (For a tutorial on ErrorDocument handling, see
-<http://hoohoo.ncsa.uiuc.edu/cgi/ErrorCGI.html>)
+`http://hoohoo.ncsa.uiuc.edu/cgi/ErrorCGI.html')
 
  - Method on CgiEnvironment: string getRedirectRequest () const
      Get the redirect request.  This will only be valid if you are
@@ -1099,7 +1089,7 @@ ErrorDocument Handling
    ---------- Footnotes ----------
 
    (1) RFC 1431 may be found at
-<http://info.internet.isi.edu:80/in-notes/rfc/files/rfc1413.txt>
+`http://info.internet.isi.edu:80/in-notes/rfc/files/rfc1413.txt'
 
 
 File: cgicc.info,  Node: class FormEntry,  Next: class FormFile,  Prev: class CgiEnvironment,  Up: Top
@@ -1436,7 +1426,7 @@ HTTPAudioHeader
    ---------- Footnotes ----------
 
    (1) The technical specification for cookies may be found at
-<http://www.cis.ohio-state.edu/htbin/rfc/rfc2109.html>.
+`http://www.cis.ohio-state.edu/htbin/rfc/rfc2109.html'.
 
 
 File: cgicc.info,  Node: classes for HTML output,  Next: Reporting Bugs,  Prev: classes for HTTP headers,  Up: Top
@@ -1444,10 +1434,10 @@ File: cgicc.info,  Node: classes for HTML output,  Next: Reporting Bugs,  Prev: 
 classes for HTML output
 ***********************
 
-   For an introduction to cgicc's HTML output, please see *Note A
+   For an introduction to Cgicc's HTML output, please see *Note A
 tutorial example::, for more information.
 
-   cgicc provides one concrete class for each HTML element defined in
+   Cgicc provides one concrete class for each HTML element defined in
 the HTML 4.0 standard (*note HTML generation classes::.).  Every class
 defining an HTML element is a subclass of the abstract base class
 `HTMLElement'.
@@ -1528,4 +1518,22 @@ class `h1', was chosen.
  - Method on h1: void h1 (const HTMLElement& EMBED)
      Creates a new HTML element containing the embedded HTML element
      EMBED.
+
+
+File: cgicc.info,  Node: Reporting Bugs,  Next: Copying,  Prev: classes for HTML output,  Up: Top
+
+Reporting Bugs
+**************
+
+   There is a mailing list for reporting bugs, <bug-cgicc@gnu.org>, to
+enable the developers to track submitted bug reports.
+
+   If you think you have found a bug in Cgicc, then you should send as
+complete a report as possible to this list. Ideally, you should include
+the text you get by running `config.guess', the text you see when you
+run `configure', and if you can, a patch made with `diff -u5' which
+fixes the problem.
+
+   If you wish to subscribe to this list, send empty mail with a
+`Subject:' line of `subscribe' to <bug-cgicc-request@gnu.org>.
 

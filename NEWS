@@ -1,61 +1,13 @@
-                       NEWS about GNU cgicc
+                       NEWS about GNU Cgicc
 
 ======================================================================
+
         Please send bug reports, suggestions, and comments to
         <bug-cgicc@gnu.org>
+
 ======================================================================
 
-        Major changes between versions 3.1.4 and 3.1.5
-        ----------------------------------------------
-
-* example/ directory completely reworked to be a real-world example
-  that uses autoconf/automake/libtool
-
-* New script 'cgicc-config' installed to help users of installed library
-
-* New configure option --enable-debug-logging
-
-* Documentation now released under the GNU Free Documentation License
-
-
-        Major changes between versions 3.1.3 and 3.1.4
-        ----------------------------------------------
-
-* Leading whitespace now correctly stripped from cookies during parsing
-
-* Demo now correct for HTTP servers not running on port 80
-
-
-        Major changes between versions 3.1.2 and 3.1.3
-        ----------------------------------------------
-
-* Incorrect #includes fixed
-
-* Other minor esthetic fixes
-
-
-        Major changes between versions 3.1.1 and 3.1.2
-        ----------------------------------------------
-
-* Fixed bug in multipart/form-data handling that caused the last form element
-  to be ignored
-
-* Fixed Win32 bug that caused indefinite hangs with MS IIS 4.0 (due to CR/LF
-  conversion on read)
-
-* Now distributed in bzip2 and rpm format, in addition to gzipped tar
-
-
-        Major changes between versions 3.1 and 3.1.1
-        --------------------------------------------
-
-* Added new method, usingHTTPS(), to CgiEnvironment
-
-* Added typedefs for standard template library iterators, to ease typing
-
-
         Major changes between versions 3.0.2 and 3.1
-        --------------------------------------------
 
 * HTML generation classes reworked, thanks to Christof Danzl.
 
@@ -68,24 +20,18 @@
 * Visual C++ 6.0 project files added, in win/ subdirectory.
 
 * All .cc files renamed to .cpp, and .hh files to .h (for Win32 support).
-
 
         Major changes between versions 3.0.1 and 3.0.2
-        ----------------------------------------------
 
 * Renamed the src/ directory to cgicc/.
-
 
         Major changes between versions 3.0 and 3.0.1
-        --------------------------------------------
 
 * Various fixes for namespace support, submitted by Bob Kline.
 
 * Updated documentation regarding Cgicc mailing lists.
-
 
         Major changes between versions 2.2.3 and 3.0
-        --------------------------------------------
 
 * Reworked to use the C++ standard template library. 
   In most places, the STL class string is used where bare char* was
@@ -106,4 +52,3 @@
   of linking to an external stylesheet.
 
 * Released as part of the GNU project under the GPL.
-

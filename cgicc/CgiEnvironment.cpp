@@ -1,7 +1,7 @@
 /*
- *  $Id: CgiEnvironment.cpp,v 1.4 2000/10/07 18:41:18 sbooth Exp $
+ *  $Id: CgiEnvironment.cpp,v 1.1 1999/08/09 18:25:30 sbooth Exp $
  *
- *  Copyright (C) 1996, 1997, 1998, 1999, 2000 Stephen F. Booth
+ *  Copyright (C) 1996, 1997, 1998, 1999 Stephen F. Booth
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,12 +26,6 @@
 #include <memory>
 #include <stdexcept>
 #include <cstdlib>
-#include <cctype>
-
-#ifdef WIN32
-#include <io.h>
-#include <fcntl.h>
-#endif
 
 #include "cgicc/CgiEnvironment.h"
 
@@ -42,11 +36,6 @@ CGICCNS CgiEnvironment::CgiEnvironment()
   LOGLN("CgiEnvironment::CgiEnvironment")
   
   readEnvironmentVariables();
-
-  // On Win32, use binary read to avoid CRLF conversion
-#ifdef WIN32
-  _setmode(_fileno(stdin), _O_BINARY);
-#endif
   
   if(stringsAreEqual( getRequestMethod(), "get")) {
     LOGLN("GET method recognized")
@@ -105,7 +94,7 @@ CGICCNS CgiEnvironment::parseCookies()
 }
 
 void
-CGICCNS CgiEnvironment::parseCookie(const STDNS string& data)
+CGICCNS CgiEnvironment::parseCookie(const STDNS string &data)
 {
   // find the '=' separating the name and value
   STDNS string::size_type pos = data.find("=", 0);
@@ -113,17 +102,9 @@ CGICCNS CgiEnvironment::parseCookie(const STDNS string& data)
   // if no '=' was found, return
   if(pos == STDNS string::npos)
     return;
-
-  // skip leading whitespace - " \f\n\r\t\v"
-  STDNS string::size_type wscount = 0;
-  STDNS string::const_iterator data_iter;
-  
-  for(data_iter = data.begin(); data_iter != data.end(); ++data_iter,++wscount)
-    if(isspace(*data_iter) == 0)
-      break;			
   
   // unescape the data, and add to the cookie list
-  STDNS string name 	= unescapeString(data.substr(wscount, pos - wscount));
+  STDNS string name 	= unescapeString(data.substr(0, pos));
   STDNS string value 	= unescapeString(data.substr(++pos));
 
   fCookies.push_back(HTTPCookie(name, value));
